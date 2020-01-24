@@ -16,6 +16,8 @@ class MainActivity : AppCompatActivity() {
 
         // run service as Alarm
         scheduleAlarm()
+
+        //BatteryInfo.sendData(applicationContext)
     }
 
     // Setup a recurring alarm every half hour

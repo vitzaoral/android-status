@@ -1,6 +1,8 @@
 package com.example.batteryblynkstatus
 
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.BatteryManager
 import android.util.Log
 import java.net.URL
@@ -34,12 +36,27 @@ class BatteryInfo {
         }
 
         private fun getData(context: Context): BatteryStatus {
-            val capacity = getBatteryCapacity((context))
-            val bm = context.getSystemService(Context.BATTERY_SERVICE) as BatteryManager
-            val batLevelPercent = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
-            val batteryInMilliamps = capacity * (batLevelPercent / 100.0)
+            val iFilter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
+            val batteryStatus = context.registerReceiver(null, iFilter)
+
+            val level = batteryStatus?.getIntExtra(BatteryManager.EXTRA_LEVEL, -1) ?: -1
+            val scale = batteryStatus?.getIntExtra(BatteryManager.EXTRA_SCALE, -1) ?: -1
+            val batteryPct = level / scale.toDouble()
+
+            val capacity = getBatteryCapacity((context)).toInt()
+            val batLevelPercent = (batteryPct * 100).toInt()
+            val batteryInMilliamps = (capacity * (batLevelPercent / 100.0)).toInt()
 
             return BatteryStatus(batLevelPercent, capacity, batteryInMilliamps)
+
+            // Other version which can works on other devices
+//
+//            val capacity = getBatteryCapacity((context))
+//            val bm = context.getSystemService(Context.BATTERY_SERVICE) as BatteryManager
+//            val batLevelPercent = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
+//            val batteryInMilliamps = capacity * (batLevelPercent / 100.0)
+//
+//            return BatteryStatus(batLevelPercent, capacity, batteryInMilliamps)
         }
 
         private fun getBatteryCapacity(context: Context?): Double {
