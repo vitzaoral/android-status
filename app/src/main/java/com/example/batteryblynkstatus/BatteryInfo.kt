@@ -11,7 +11,7 @@ import java.net.URL
 class BatteryInfo {
 
     companion object {
-        private const val blynkToken = "TODO"
+        private const val blynkToken = "ugVkvY0wO5DBRweyXl1tEdvfACcyFa_p"
 
         fun sendData(context: Context) {
             // TODO: sila signalu https://stackoverflow.com/questions/58746879/how-to-get-dual-sim-signal-strength-using-kotlin
@@ -21,11 +21,13 @@ class BatteryInfo {
             // TODO: WiFi hotspot https://android.stackexchange.com/questions/91412/how-to-start-a-hotspot-automatically-on-device-boot
             val status = getData(context)
 
+            // https://blynk.cloud/external/api/update?token=ugVkvY0wO5DBRweyXl1tEdvfACcyFa_p&v50=55
+
             try {
                 Thread {
-                    URL("http://blynk-cloud.com/${blynkToken}/update/V50?value=${status.level}").readText()
-                    URL("http://blynk-cloud.com/${blynkToken}/update/V51?value=${status.currentCapacity}").readText()
-                    URL("http://blynk-cloud.com/${blynkToken}/update/V52?value=${status.allCapacity}").readText()
+                    URL("https://blynk.cloud/external/api/update?token=${blynkToken}&v50=${status.level}").readText()
+                    URL("https://blynk.cloud/external/api/update?token=${blynkToken}&v51=${status.currentCapacity}").readText()
+                    URL("https://blynk.cloud/external/api/update?token=${blynkToken}&v52=${status.allCapacity}").readText()
                     Log.i("🟢", "OK")
                 }.start()
 
